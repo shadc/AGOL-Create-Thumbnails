@@ -1,0 +1,38 @@
+<h1>AGOL Create Thumbnails</h1>
+
+<p>This is an ArcCatalog addin that allows users to generate standardized thumbnails for ArcGIS Online.  With this addin you don't have to have Photoshop
+or some other image manipulation software to brand and annotate your thumbnails for your organization. Simply crop a base image to 200 x 133 pixels 
+and use this addin to do the rest. </p>
+
+<p>NOTE: This toolbar requires the python library Pillow be installed. The windows version (Pillow-2.3.0.win32-py2.7.exe) is included in this repository.
+Install this before installing the toolbar. </p>
+
+<p>Start with this...</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/25277330/DSC_3229.JPG" alt="alt tag" /></p>
+
+<p>and end up with this...</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/25277330/Water_Levels.png" alt="alt tag" /></p>
+
+<p>Easily customize:</p>
+
+<p>Modify the "Type" and "Department" by opening the toolbox (\install\scripts\AGOLThumbnails.tbx) in ArcCatalog and modifying the "parameters"
+of the "Create AGOL Thumbnail" tool. </p>
+
+<p>Update the logo by replacing the logo file \install\images\Logo.png) with your 30 x 30 pixel logo.</p>
+
+<p>Advanced:
+Modify the colors, text, location, etc by modifying the CreateThumbnail.py file in the \install\Scripts\ folder.</p>
+
+<p>After you have customized the add-in recompile it by double clicking the makeaddin.py file.  Then double click the 
+AGOL Create Thumbnails.esriaddin to install the addin.  </p>
+
+<p>Created By <a href="https://github.com/shadcampbell">shadcampbell</a> <a href="https://twitter.com/shadc">@shadc</a></p>
+
+<h2>Known Issues:</h2>
+
+<ul>
+<li>Does not crop or resize an input image to 200 x 133 pixels.</li>
+<li>Long titles can run off the image.  </li>
+</ul>
