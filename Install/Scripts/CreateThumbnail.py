@@ -20,9 +20,51 @@ from PIL.ImageChops import difference
 title = arcpy.GetParameterAsText(0)
 private = arcpy.GetParameterAsText(1)
 stype = arcpy.GetParameterAsText(2)
-departement =arcpy.GetParameterAsText(3)
-thumbnail =arcpy.GetParameterAsText(4)
-outputFolder =arcpy.GetParameterAsText(5)
+departement = arcpy.GetParameterAsText(3)
+thumbnail = arcpy.GetParameterAsText(4)
+crop = arcpy.GetParameterAsText(5)
+outputFolder = arcpy.GetParameterAsText(6)
+
+
+def resize_and_crop(img, size, crop_type='top'):
+
+    # Get current and desired ratio for the images
+    img_ratio = img.size[0] / float(img.size[1])
+    ratio = size[0] / float(size[1])
+    #The image is scaled/cropped vertically or horizontally depending on the ratio
+    if ratio > img_ratio:
+        img = img.resize((size[0], int(round(size[0] * img.size[1] / img.size[0]))),
+            Image.ANTIALIAS)
+        # Crop in the top, middle or bottom
+        if crop_type == 'top':
+            box = (0, 0, img.size[0], size[1])
+        elif crop_type == 'middle':
+            box = (0, int(round((img.size[1] - size[1]) / 2)), img.size[0],
+                int(round((img.size[1] + size[1]) / 2)))
+        elif crop_type == 'bottom':
+            box = (0, img.size[1] - size[1], img.size[0], img.size[1])
+        else :
+            raise ValueError('ERROR: invalid value for crop_type')
+        img = img.crop(box)
+    elif ratio < img_ratio:
+        img = img.resize((int(round(size[1] * img.size[0] / img.size[1])), size[1]),
+            Image.ANTIALIAS)
+        # Crop in the top, middle or bottom
+        if crop_type == 'top':
+            box = (0, 0, size[0], img.size[1])
+        elif crop_type == 'middle':
+            box = (int(round((img.size[0] - size[0]) / 2)), 0,
+                int(round((img.size[0] + size[0]) / 2)), img.size[1])
+        elif crop_type == 'bottom':
+            box = (img.size[0] - size[0], 0, img.size[0], img.size[1])
+        else :
+            raise ValueError('ERROR: invalid value for crop_type')
+        img = img.crop(box)
+    else :
+        img = img.resize((size[0], size[1]),
+            Image.ANTIALIAS)
+    # If the scale is the same, we do not need to crop
+    return img;
 
 ##title = "Testing 123"
 ##private ="False"
@@ -65,11 +107,11 @@ serviceAreaRotated = serviceArea.rotate(90)
 ## Create new thumbnail and add components.
 newThumb = Image.open(thumbnail)
 if (newThumb.size!=(200, 133)):
-    raise Exception('Incorrect input thumbnail size.  Must be 200 pixels by 133 pixels.')
+    newThumb = resize_and_crop(newThumb, (200, 133), crop)
 
 newThumb.paste(serviceAreaRotated, (0,0), serviceAreaRotated)
 newThumb.paste(departmentArea, mask=departmentArea)
 newThumb.paste(lock, (175,104), lock)
 newThumb.paste(logo, (2,102), logo)
-newThumb.save(outputFolder + "/" + title.replace(" ", "_") + ".png")
+newThumb.save(outputFolder + "/" + title.replace(" ", "_") + "_" + stype.replace(" ", "_") + ".png")
 
